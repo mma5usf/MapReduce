@@ -35,10 +35,10 @@ if __name__ == '__main__':
     c = zerorpc.Client()
     c.connect('tcp://' + addr)
     mr_code = client.get_code()
-    print mr_code
+    #print mr_code
     mr_job = client.get_mr_job()
-    print mr_job
-    print c.mr_job(str(mr_code), mr_job)
+    #print mr_job
+    c.mr_job(str(mr_code), mr_job)
 
 
 

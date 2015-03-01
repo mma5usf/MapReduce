@@ -15,6 +15,7 @@
 # This file was change from bully.py
 
 import sys
+import imp
 import gevent
 import zerorpc
 
@@ -45,7 +46,11 @@ class Worker(object):
 
     def get_job(self, mr_job):
         self.mr_job = mr_job
-        print self.mr_job
+        #print self.mr_job
+        self.m = self.importCode("user_mr")
+        self.m.testFunc()
+        self.o = self.m.testClass()
+        self.o.testMethod()
 
         
 
@@ -58,7 +63,14 @@ class Worker(object):
         ############################################
         return ans
 
+    def importCode(self, name):
+        '''
+        Reference: http://code.activestate.com/recipes/82234-importing-a-dynamically-generated-module/
+        '''
 
+        module = imp.new_module(name)
+        exec self.mr_job["code"] in module.__dict__
+        return module
 
     def get_chunk(file_name, split_size, chunk_index):
         pass
