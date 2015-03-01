@@ -18,7 +18,6 @@
 # This file was change from bully.py
 
 
-import logging
 import sys
 import gevent
 import zerorpc
@@ -73,8 +72,8 @@ class Master(object):
     def setup(self):
         '''After the set up process, start the working process'''
         self.get_workers()
-
-        if len(self.workers) == 0:
+        self.worker_num = len(self.workers)
+        if self.worker_num == 0:
             print "No workers running. Please check your servers!!!"
             sys.exit()
 
@@ -84,7 +83,7 @@ class Master(object):
             print self.servers[i]
         print "Now you can run your MapReduce jobs."
 
-        self.num_worker = len(self.)
+
 
 
     def get_workers(self):
@@ -130,20 +129,39 @@ class Master(object):
         ############################################
         return ans
 
-    def get_job(self, job):
-        pass
+    def assign_tasks(self):
+        '''Deploy mapreduce jobs to workers'''
+
+        for i in self.workers:
+            try:
+                self.connections[i].get_job(self.mr_job)
+            except zerorpc.TimeoutExpired:
+                print "Timeout: " + self.servers[i]
+                ##################################
+                #handle worker failure
+                ##################################
+                continue
+
+
+    def mr_job(self, mr_code, job_info):
+        self.mr_job = job_info
+        self.mr_job["code"] = mr_code
+        print self.mr_job
+
+        self.assign_tasks()
+        gevent.sleep(0)
         
 
 
 if __name__ == '__main__':
-    
-    logging.basicConfig(level=logging.INFO)
     
     addr = sys.argv[1]
     master = Master(addr)
 
     s = zerorpc.Server(master)
     s.bind('tcp://' + addr)
+    # Start server
+    gevent.Greenlet.spawn(s.run)
     master.start()
-    # # Start server
-    s.run()
+
+

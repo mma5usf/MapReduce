@@ -14,7 +14,6 @@
 # You can kill (CTRL-C) a server to see the election run again.
 # This file was change from bully.py
 
-import logging
 import sys
 import gevent
 import zerorpc
@@ -26,18 +25,28 @@ class Worker(object):
     def __init__(self, addr, config_file='config'):
         self.addr = addr
 
-    def start(self):
+        
+
+
+    def start(self, master_addr):
         ####################################################################
         #
         #We will try to add some ssh code to start the workers automatically
         #
         ####################################################################
-        pass
+        self.master_addr = master_addr
+        #self.c = zerorpc.Client()
+        #self.c.connect('tcp://' + master_addr)
 
         ###########################################
         #self.pool.spawn(client_task).join()
         #Access client task
         ###########################################
+
+    def get_job(self, mr_job):
+        self.mr_job = mr_job
+        print self.mr_job
+
         
 
     def are_you_there(self):
@@ -49,6 +58,8 @@ class Worker(object):
         ############################################
         return ans
 
+
+
     def get_chunk(file_name, split_size, chunk_index):
         pass
 
@@ -56,12 +67,10 @@ class Worker(object):
 
 if __name__ == '__main__':
     
-    logging.basicConfig(level=logging.INFO)
-    
     addr = sys.argv[1]
     worker = Worker(addr)
     s = zerorpc.Server(worker)
     s.bind('tcp://' + addr)
     # Start server
     s.run()
-    worker.start()
+    
