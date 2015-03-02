@@ -134,7 +134,7 @@ class Master(object):
 
         for i in self.workers:
             try:
-                self.connections[i].get_job(self.mr_job)
+                self.connections[i].get_job(self.mr_job, "mapper", i)
                 self.connections[i].start_mapper()
             except zerorpc.TimeoutExpired:
                 print "Timeout: " + self.servers[i]
@@ -148,6 +148,7 @@ class Master(object):
         '''Get the MapReduce job informations from client'''
 
         self.mr_job = job_info
+        self.mr_job["mapper_num"] = len(self.workers) - job_info["reducer_num"]
         self.mr_job["code"] = mr_code
         print self.mr_job
 

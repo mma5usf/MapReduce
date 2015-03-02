@@ -20,15 +20,15 @@ class WordCountReduce(mapreduce.Reduce):
 
 
 
-def map(filename):
+def map(input_list):
     
     ############################
     #This part should be change not read the whole file but the relevent parts of the file
     ############################
 
-    f = open(filename)
-    input_list = f.readlines()
-    f.close()
+    # f = open(filename)
+    # input_list = f.readlines()
+    # f.close()
     # Map phase
     mapper = WordCountMap()
     for i, v in enumerate(input_list):
@@ -38,7 +38,7 @@ def map(filename):
     table = mapper.get_table()
     keys = table.keys()
     keys.sort()
-    print table
+    return table
  
 
 def reduce():
@@ -53,6 +53,12 @@ def reduce():
     for k in keys:
         reducer.reduce(k, table[k])
     result_list = reducer.get_result_list()
-    
+
+
+def partition(chunk_table, chunk_num):
+    '''This is the partition function for this mr_job'''
+    for i, chunk in chunk_table:
+        
+
 
 
