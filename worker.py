@@ -45,14 +45,20 @@ class Worker(object):
         ###########################################
 
     def get_job(self, mr_job):
+        '''Get the MapReduce job informantion'''
         self.mr_job = mr_job
         #print self.mr_job
-        self.m = self.importCode("user_mr")
-        self.m.testFunc()
-        self.o = self.m.testClass()
-        self.o.testMethod()
-
+        self.m = self.importCode("client_job")
         
+
+    def start_mapper(self):
+        '''start the map job'''       
+        self.m.map(self.mr_job["input_file"])
+
+
+    def start_reducer(self):
+        '''start the reduce job'''
+        pass
 
     def are_you_there(self):
         ans = {}
@@ -78,7 +84,6 @@ class Worker(object):
 
 
 if __name__ == '__main__':
-    
     addr = sys.argv[1]
     worker = Worker(addr)
     s = zerorpc.Server(worker)
