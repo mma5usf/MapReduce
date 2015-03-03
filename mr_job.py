@@ -31,7 +31,7 @@ if __name__ == '__main__':
     output_file = sys.argv[6]
     file_type = sys.argv[7]
 
-    client = Client(addr, code_file, split_size, num, input_file, output_file)
+    client = Client(addr, code_file, split_size, num, input_file, output_file, file_type)
 
     c = zerorpc.Client()
     c.connect('tcp://' + addr)
